@@ -7,43 +7,47 @@ import "./styles.css";
 class setKontroler extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       kipas: 0,
       suhu: 0,
       color:""
     };
+
     this.onClickHidupkan = this.onClickHidupkan.bind(this);
     this.onClickMatikan = this.onClickMatikan.bind(this);
     this.getData = this.getData.bind(this);
   }
 
   componentDidMount() {
-    this.getData();
+    // Use manual listener since BE does not support automatic data injection (websocket)
+    // TODO: use websocket connection instead
+    setInterval(() => {
+      this.getData()
+    }, 500) // check every 0.5 ms
   }
 
   async getData() {
-    let response = await axios.get("https://y78v1-3000.sse.codesandbox.io");
-    console.log(response.data);
-    this.setState({
-      kipas: response.data.kipas,
-      suhu: response.data.suhu
-    });
+    const response = await axios.get("https://y78v1-3000.sse.codesandbox.io")
+    if (this.state.suhu !== response.data.suhu) {
+      this.setState({ suhu: response.data.suhu })
+    }
   }
 
-  componentDidUpdate() {
-    this.getData();
-  }
-
-  onClickHidupkan() {
-    axios.get(
+  async onClickHidupkan() {
+    const response = await axios.get(
       "https://y78v1-3000.sse.codesandbox.io" + "/1" + "/" + this.state.suhu
-    );
+    )
+
+    this.setState({ kipas: response.data.kipas })
   }
 
-  onClickMatikan() {
-    axios.get(
+  async onClickMatikan() {
+    const response = await axios.get(
       "https://y78v1-3000.sse.codesandbox.io" + "/0" + "/" + this.state.suhu
-    );
+    )
+
+    this.setState({ kipas: response.data.kipas })
   }
 
   render() {
