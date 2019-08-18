@@ -31,6 +31,8 @@ class setKontroler extends React.Component {
     const response = await axios.get("https://y78v1-3000.sse.codesandbox.io")
     if (this.state.suhu !== response.data.suhu) {
       this.setState({ suhu: response.data.suhu })
+    } else if (this.state.kipas !== response.data.kipas) {
+      this.setState({ kipas: response.data.kipas })
     }
   }
 
