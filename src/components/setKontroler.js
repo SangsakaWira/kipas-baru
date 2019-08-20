@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { Alert, Button } from "react-bootstrap";
 import Layout from "./layout";
+import Websocket from "react-websocket";
 
 class setKontroler extends React.Component {
   constructor(props) {
@@ -19,15 +20,10 @@ class setKontroler extends React.Component {
   }
 
   componentDidMount() {
-    // Use manual listener since BE does not support automatic data injection (websocket)
-    // TODO: use websocket connection instead
-    setInterval(() => {
-      this.getData();
-    }, 300); // check every 0.5 ms
+    this.getData();
   }
 
-  async getData() {
-    const response = await axios.get("https://y78v1-3000.sse.codesandbox.io");
+  getData(response) {
     if (this.state.suhu !== response.data.suhu) {
       this.setState({ suhu: response.data.suhu });
     } else if (this.state.kipas !== response.data.kipas) {
@@ -54,6 +50,10 @@ class setKontroler extends React.Component {
   render() {
     return (
       <Layout>
+        <Websocket
+          url='https://y78v1-3000.sse.codesandbox.io'
+          onMessage={this.getData.bind(this)}
+        />
         <Alert variant='secondary'>
           <Alert.Heading>Kondisi Kipas: {this.state.kipas}</Alert.Heading>
           <p>Ingin menghidupkan atau mematikan Kipas?</p>

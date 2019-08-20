@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { Alert } from "react-bootstrap";
 import Layout from "./layout";
+import Websocket from "react-websocket";
 
 export default class setMonitor extends React.Component {
   constructor(props) {
@@ -16,13 +17,10 @@ export default class setMonitor extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(() => {
-      this.getData();
-    }, 300);
+    this.getData();
   }
 
-  async getData() {
-    let response = await axios.get("https://y78v1-3000.sse.codesandbox.io");
+  getData(response) {
     if (this.state.suhu !== response.data.suhu) {
       this.setState({ suhu: response.data.suhu });
       this.cekKondisiSuhu(response.data.suhu);
@@ -54,6 +52,10 @@ export default class setMonitor extends React.Component {
   render() {
     return (
       <Layout>
+        <Websocket
+          url='https://y78v1-3000.sse.codesandbox.io'
+          onMessage={this.getData.bind(this)}
+        />
         <Alert variant={this.state.status}>
           <Alert.Heading>Suhu: {this.state.suhu}</Alert.Heading>
           <Alert.Heading>Kondisi Kipas: {this.state.kipas}</Alert.Heading>
