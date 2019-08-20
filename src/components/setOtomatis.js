@@ -1,8 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { Nav, Container, Alert } from "react-bootstrap";
-
-import "./styles.css";
+import { Alert } from "react-bootstrap";
+import Layout from "./layout";
 
 class setOtomatis extends React.Component {
   constructor(props) {
@@ -35,28 +34,15 @@ class setOtomatis extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Nav fill variant="tabs" defaultActiveKey="/otomatis">
-          <Nav.Item>
-            <Nav.Link href="/kontrol">Kontrol Kipas</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="/monitor">Monitoring Kipas</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="/otomatis">Mode Otomatis</Nav.Link>
-          </Nav.Item>
-        </Nav>
-        <Container style={{ marginTop: "20px" }}>
-          <Alert variant="primary">
-            <Alert.Heading>Mode Otomatis diaktifkan</Alert.Heading>
-            <p>
-              Mode otomatis adalah mode dimana pada saat suhu diatas 50 akan
-              menghidupkan kipas secara otomatis
-            </p>
-          </Alert>
-        </Container>
-      </div>
+      <Layout>
+        <Alert variant='primary'>
+          <Alert.Heading>Mode Otomatis diaktifkan</Alert.Heading>
+          <p>
+            Mode otomatis adalah mode dimana pada saat suhu diatas 50 akan
+            menghidupkan kipas secara otomatis
+          </p>
+        </Alert>
+      </Layout>
     );
   }
 }

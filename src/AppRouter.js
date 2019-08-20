@@ -9,9 +9,9 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <div>
-        <Route path="/kontrol" exact component={setKontroler} />
-        <Route path="/monitor" component={setMonitor} />
-        <Route path="/otomatis" component={setOtomatis} />
+        <Route path='/' exact component={setKontroler} />
+        <Route path='/monitor' component={setMonitor} />
+        <Route path='/otomatis' component={setOtomatis} />
       </div>
     </BrowserRouter>
   );
