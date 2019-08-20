@@ -1,7 +1,7 @@
 import React from "react";
 import { Alert } from "react-bootstrap";
-import Layout from "./layout";
 import { connect } from "redux-zero/react";
+import Layout from "../components/layout";
 import actions from "../service/action.js";
 
 const mapToProps = ({ kipas, suhu }) => ({

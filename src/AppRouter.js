@@ -1,10 +1,9 @@
-import setKontroler from "./components/setKontroler";
-// import App from "./components/App";
-import { BrowserRouter, Route } from "react-router-dom";
-import setMonitor from "./components/setMonitor";
-import setOtomatis from "./components/setOtomatis";
 import React from "react";
+import { BrowserRouter, Route } from "react-router-dom";
 import { Provider } from "redux-zero/react";
+import setKontroler from "./pages/setKontroler";
+import setMonitor from "./pages/setMonitor";
+import setOtomatis from "./pages/setOtomatis";
 import store from "./service/store";
 
 const AppRouter = () => {

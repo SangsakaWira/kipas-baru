@@ -1,7 +1,7 @@
 import React from "react";
-import { Nav, NavItem, Container } from "react-bootstrap";
+import { Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { styles } from "./styles";
+import { styles } from "../styles/styles";
 
 const Layout = ({ children }) => {
   return (
