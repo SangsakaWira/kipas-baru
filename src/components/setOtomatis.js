@@ -1,35 +1,34 @@
-import axios from "axios";
 import React from "react";
 import { Alert } from "react-bootstrap";
 import Layout from "./layout";
+import { connect } from "redux-zero/react";
+import actions from "../service/action.js";
+
+const mapToProps = ({ kipas, suhu }) => ({
+  kipas,
+  suhu
+});
 
 class setOtomatis extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      kipas: 0,
-      suhu: 0
-    };
-  }
-
   componentDidMount() {
-    axios.get("https://y78v1-3000.sse.codesandbox.io").then(response => {
-      console.log(response.data);
-      this.setState({
-        kipas: response.data.kipas,
-        suhu: response.data.suhu
-      });
-    });
+    this.props.setKipas();
+    this.props.setSuhu();
+    this.props.hidupkanKipas();
+    this.cekKondisiSuhu(this.props.suhu);
+
+    this.dataListener = setInterval(() => {
+      this.props.setSuhu();
+      this.cekKondisiSuhu(this.props.suhu);
+    }, 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.dataListener);
   }
 
-  componentDidUpdate() {
-    axios.get("https://y78v1-3000.sse.codesandbox.io").then(response => {
-      console.log(response.data);
-      this.setState({
-        kipas: response.data.kipas,
-        suhu: response.data.suhu
-      });
-    });
+  cekKondisiSuhu(suhu) {
+    if (suhu >= 50) {
+      this.props.matikanKipas();
+    }
   }
 
   render() {
@@ -39,7 +38,7 @@ class setOtomatis extends React.Component {
           <Alert.Heading>Mode Otomatis diaktifkan</Alert.Heading>
           <p>
             Mode otomatis adalah mode dimana pada saat suhu diatas 50 akan
-            menghidupkan kipas secara otomatis
+            mematikan kipas secara otomatis
           </p>
         </Alert>
       </Layout>
@@ -47,4 +46,7 @@ class setOtomatis extends React.Component {
   }
 }
 
-export default setOtomatis;
+export default connect(
+  mapToProps,
+  actions
+)(setOtomatis);

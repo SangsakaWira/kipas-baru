@@ -1,48 +1,53 @@
-import axios from "axios";
 import React from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Spinner } from "react-bootstrap";
 import Layout from "./layout";
-import Websocket from "react-websocket";
+import { connect } from "redux-zero/react";
+import actions from "../service/action.js";
 
-export default class setMonitor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      kipas: 0,
-      suhu: 0,
-      status: "success",
-      message: "Aman"
-    };
-    this.getData = this.getData.bind(this);
-  }
+const mapToProps = ({
+  kipas,
+  loading_kipas,
+  suhu,
+  loading_suhu,
+  status,
+  message
+}) => ({
+  kipas,
+  loading_kipas,
+  suhu,
+  loading_suhu,
+  status,
+  message
+});
 
+class setMonitor extends React.Component {
   componentDidMount() {
-    this.getData();
-  }
+    this.props.setKipas();
+    this.props.setSuhu();
+    this.cekKondisiSuhu(this.props.suhu);
 
-  getData(response) {
-    if (this.state.suhu !== response.data.suhu) {
-      this.setState({ suhu: response.data.suhu });
-      this.cekKondisiSuhu(response.data.suhu);
-    } else if (this.state.kipas !== response.data.kipas) {
-      this.setState({ kipas: response.data.kipas });
-    }
+    this.dataListener = setInterval(() => {
+      this.props.setSuhu();
+      this.cekKondisiSuhu(this.props.suhu);
+    }, 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.dataListener);
   }
 
   cekKondisiSuhu(suhu) {
-    if (parseInt(suhu) <= 30) {
-      // console.log("Aman");
-      this.setState({
+    if (suhu <= 30) {
+      this.props.gantiStatus({
         status: "success",
         message: "Aman"
       });
-    } else if (parseInt(suhu) >= 30 && parseInt(suhu) <= 50) {
-      this.setState({
+    } else if (suhu >= 30 && suhu <= 50) {
+      this.props.gantiStatus({
         status: "warning",
         message: "Warning"
       });
     } else {
-      this.setState({
+      this.props.gantiStatus({
         status: "danger",
         message: "Bahaya"
       });
@@ -52,19 +57,38 @@ export default class setMonitor extends React.Component {
   render() {
     return (
       <Layout>
-        <Websocket
-          url='https://y78v1-3000.sse.codesandbox.io'
-          onMessage={this.getData.bind(this)}
-        />
-        <Alert variant={this.state.status}>
-          <Alert.Heading>Suhu: {this.state.suhu}</Alert.Heading>
-          <Alert.Heading>Kondisi Kipas: {this.state.kipas}</Alert.Heading>
+        <Alert variant={this.props.status}>
+          <Alert.Heading>
+            Suhu:{" "}
+            {this.props.loading_suhu ? (
+              <Spinner animation='border' role='status' size='sm'>
+                <span className='sr-only'>Loading...</span>
+              </Spinner>
+            ) : (
+              this.props.suhu
+            )}
+          </Alert.Heading>
+          <Alert.Heading>
+            Kondisi Kipas:{" "}
+            {this.props.loading_kipas ? (
+              <Spinner animation='border' role='status' size='sm'>
+                <span className='sr-only'>Loading...</span>
+              </Spinner>
+            ) : (
+              this.props.kipas
+            )}
+          </Alert.Heading>
           <p>
             Kipas dan suhu yang ada di ruangan ini berada pada kondisi
-            <b> {this.state.message}</b>
+            <b> {this.props.message}</b>
           </p>
         </Alert>
       </Layout>
     );
   }
 }
+
+export default connect(
+  mapToProps,
+  actions
+)(setMonitor);
